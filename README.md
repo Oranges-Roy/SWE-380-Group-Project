@@ -36,4 +36,13 @@ Our current research question is to match and rank skills for a specific languag
 `src/ingest_and_analyze.py` serves as the core execution pipeline for detecting duplicate and similar `SKILL.md` records within C++ repositories. It operates through the following steps:
 
 * **Flexible Path Resolution:** Interactively prompts for the extracted C++ skills CSV (`extracted_skills_sample.csv`), automatically resolving paths across local directories, quotation styles, or `data/` / `results/` subfolders.
-* **Type-1 Clone Extraction:** Performs verbatim match analysis by grouping records with identical SHA hashes (`file_
+* **Type-1 Clone Extraction:** Performs verbatim match analysis by grouping records with identical SHA hashes (`file_sha`) to generate exact duplicate pairs.
+* **TF-IDF & Cosine Similarity Analysis:** Vectorizes distinct skill contents using TF-IDF and computes pairwise cosine similarity scores ($\ge 0.65$) to classify near-duplicates into:
+  * **Type-2 (Parameterized):** Similarity score of $0.85$ or higher.
+  * **Type-3 (Semantic):** Similarity score between $0.65$ and less than $0.85$.
+* **Automated Exporting:** Generates three structured output files in the `results/` folder:
+  * `cpp_similar_pairs.csv`: Full catalog of identified similarity pairs.
+  * `top10_similar_pairs.csv`: Top 10 highest-similarity clone pairs sorted by score.
+  * `validation_sample_30.csv`: A balanced 30-pair stratified sample (10 Type-1, 10 Type-2, 10 Type-3) used for manual inspection and threshold calibration.
+
+6. Run `inspect_pair_content.py`, which uses `validation_sample_30.csv` and `extracted_skills_sample.csv` to visually display the extracted pair content. *(This step revealed the primary threat to validity noted in [THREATS_TO_VALIDITY.md](THREATS_TO_VALIDITY.md))*
