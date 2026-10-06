@@ -1,1 +1,7 @@
-
+| Date | AI Tool / Engine | Purpose / Task | Prompt / Query Summary | Human Action & Verification |
+| :--- | :--- | :--- | :--- | :--- |
+| **Sep 18, 2026** | Google Gemini | Topic Refinement & Framing | Asked how to scope down GitSkills RQ A1 & A5 specifically for a language-specific subset. | Adopted language filtering (C++) to control dataset scale and defined clone taxonomy (Types 1–3). |
+| **Sep 25, 2026** | Google Gemini | Pipeline Prototyping | Requested Python code to run TF-IDF and cosine similarity for near-duplicate skill detection. | Embedded logic into `src/ingest_and_analyze.py` and set initial thresholds (0.85 and 0.65). |
+| **Oct 02, 2026** | Google Gemini | Colab Environment Migration | Adjusted dataset paths, and validated pipeline execution on 10,737 C++ skill records. |
+| **Oct 05, 2026** | Google Gemini | Code Debugging & Refactoring | Provided snippet output showing 1.0 similarity scores under Type-2 clones and `NaN` skill names. | Added missing-value handling (`fillna('[Unnamed Skill]')`) and verified why distinct `file_sha` hashes with identical body text map to Type-2. |
+| **Oct 06, 2026** | Google Gemini | Visualization & Metrics Accounting | Requested a visualization script where clone categories sum up exactly to the total raw population of 10,737 rows. | Implemented hierarchical assignment logic (`Type-1` -> `Type-2` -> `Type-3` -> `Truly Unique`) and generated Seaborn distribution bar chart.
