@@ -170,6 +170,8 @@ def main():
 
     print("[2/4] Type-1 (identical SHA) ...")
     t1 = type1_pairs(df)
+    t1.to_csv(os.path.join(out, f"{tag}_type1_pairs.csv"), index=False)
+    print(f"      {len(t1):,} Type-1 pairs saved")
 
     print("[3/4] Type-2 / Type-3 (TF-IDF cosine) ...")
     pairs = similar_pairs(df, args.type3, args.type2)
