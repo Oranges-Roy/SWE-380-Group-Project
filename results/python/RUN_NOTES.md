@@ -13,12 +13,27 @@ Python: conda base, Python 3.13.11, pandas 2.3.3, scikit-learn 1.8.0, matplotlib
 | Step | Status | Result |
 |---|---|---|
 | 1. Extract | done (~7 min, full 44 GB scan) | **1,657,440** Python skill occurrences, **769,920** distinct files (`file_sha`) |
-| 2. Type-1 (identical SHA) | done | pairs built in memory; not written (the script saves them only at the end) |
+| 2. Type-1 (identical SHA) | done | **887,520** Type-1 pairs from **140,596** SHAs that occur more than once; those groups hold **1,028,116** occurrences (**62.0%** of all Python skill occurrences = the Type-1 category count). Largest group: 1,026 identical copies. See `python_type1_pairs.csv.gz`. |
 | 3. Type-2 / Type-3 (TF-IDF) | **stopped manually** while fitting the vectoriser, before any chunk was compared | — |
 | 4. Categorise + plot | not reached | — |
 
 Total runtime before stop: ~11.5 min. Peak private memory: **~16.2 GB**
 (peak working set ~7.9 GB; the rest was paged out to the pagefile).
+
+### Type-1 output
+
+`python_type1_pairs.csv.gz` (6.6 MB; 122 MB uncompressed, over GitHub's 100 MB
+limit) was generated afterwards from `extracted_skills_python.csv` using the
+script's own `type1_pairs()` on the `file_sha` and `name` columns, without
+re-scanning the DB. Row order is the same as in the extraction, so the pairs
+are identical to what the pipeline builds in memory. Read it with
+`pd.read_csv("python_type1_pairs.csv.gz")`. The script now also writes
+`<lang>_type1_pairs.csv` right after step 2, so future runs keep it even if
+TF-IDF does not finish.
+
+The Type-1 category share (62.0%) is final; it does not depend on TF-IDF.
+The Type-2 / Type-3 / Unique split of the remaining 629,324 occurrences
+needs step 3.
 
 The run was stopped on purpose because it was exceeding physical RAM.
 `clone_distribution.csv` and `top10_similar_pairs.csv` were therefore **not produced**.
