@@ -27,7 +27,7 @@ Roy- Oranges-Roy **Product owner/Scrum Master**
 
 **Developers/Contributors**
 
-Roshkrishna- _Lucifix_ and Lucifix-SML
+Roshkrishna- _Lucifix_ 
 
 William-
 
