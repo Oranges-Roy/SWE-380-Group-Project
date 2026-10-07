@@ -23,8 +23,10 @@ Our current research question is to match and rank skills for a specific languag
 
 ---
 ## Scrum assignments
-Roy- Oranges-Roy Product owner/Scrum Master
-Developers/Contributors  
+Roy- Oranges-Roy **Product owner/Scrum Master**
+
+**Developers/Contributors**
+
 Roshkrishna- _Lucifix_ and Lucifix-SML
 William- 
 Pranjal-
