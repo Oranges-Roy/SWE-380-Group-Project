@@ -22,7 +22,13 @@ Our current research question is to match and rank skills for a specific languag
 *Inspired by the MSR 2027 Mining Challenge, implement a working mining or analysis pipeline, and produce evidence-based findings about AI-native software-engineering artifacts.*
 
 ---
-
+## Scrum assignments
+Roy- Oranges-Roy Product owner/Scrum Master
+Developers/Contributors  
+Roshkrishna- _Lucifix_ and Lucifix-SML
+William- 
+Pranjal-
+---
 ## Steps to Reproduce Findings
 
 1. Download `agent_skills_release.db` from [Zenodo](https://zenodo.org/records/21875637).
