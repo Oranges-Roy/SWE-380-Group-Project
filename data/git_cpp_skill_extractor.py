@@ -40,7 +40,7 @@ df = pd.read_sql_query(query, conn)
 conn.close()
 # Save sample output
 print(f"Total skills extracted: {len(df)}")
-# Create the 'results' directory if it doesn't exist
-os.makedirs("results", exist_ok=True)
+# Create the 'data' directory if it doesn't exist
+os.makedirs("data", exist_ok=True)
 # Save output
-df.to_csv("results/extracted_skills_sample.csv", index=False)
+df.to_csv("data/extracted_skills_sample.csv", index=False)
