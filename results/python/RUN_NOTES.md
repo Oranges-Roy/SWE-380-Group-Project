@@ -11,8 +11,10 @@ extraction and store pairs compactly (results identical, verified on Java).
 
 - Memory: ~13.5 GB while building the TF-IDF matrix.
 - Time: ~19 h 20 min from the Type-1 step finishing to the pairs file being
-  written (file timestamps). The `--dry-run` estimate was ~11 h; the gap may
-  include time the machine was idle or paused.
+  written (file timestamps; the machine ran continuously). The `--dry-run`
+  estimate of ~11 h was about 75% too low: it times only the matrix product
+  and match count for a sample, not extracting and storing every match over
+  the full run. Treat its time estimate as a lower bound.
 
 ## Results
 
