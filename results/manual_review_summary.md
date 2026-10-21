@@ -1,6 +1,6 @@
 # Manual review of validation samples — Java, Rust, Python
 
-**Status: first pass, drafted with AI assistance; to be spot-checked by the team.**
+**Status: final, spot-checked by Lucifix.**
 Per-pair verdicts and reasons: `results/java/manual_review.md`,
 `results/rust/manual_review.md`, `results/python/manual_review.md`.
 

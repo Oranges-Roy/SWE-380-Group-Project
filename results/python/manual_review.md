@@ -1,7 +1,6 @@
 # Python — manual review of validation_sample_30.csv
 
-**Status: first pass, drafted with AI assistance. Team members should spot-check
-before these verdicts are treated as final.**
+**Status: final, spot-checked by Lucifix.**
 
 Each of the 30 pairs in `validation_sample_30.csv` (10 Type-1, 10 Type-2, 10 Type-3,
 sampled with `random_state=42`) was reviewed by reading both files' full text and
