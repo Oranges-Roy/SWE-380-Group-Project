@@ -42,7 +42,14 @@ TYPE1, TYPE2, TYPE3, UNIQUE = (
 
 
 # ---------------------------------------------------------------- 1. extract
-def extract(db_path: str, lang: str) -> pd.DataFrame:
+def extract(db_path: str, lang: str, csv_path: str, chunksize: int = 50_000):
+    """Stream the query result to csv_path in chunks.
+
+    Returns (df, first_content): df holds only file_sha and name for every
+    occurrence (in query order), and first_content maps each SHA to the content
+    of its first occurrence -- the only content the TF-IDF step uses. This keeps
+    memory to one copy of the text per distinct file instead of per occurrence.
+    """
     aliases = LANG_ALIASES.get(lang.lower(), [lang.lower()])
     marks = ",".join("?" * len(aliases))
     query = f"""
@@ -52,9 +59,19 @@ def extract(db_path: str, lang: str) -> pd.DataFrame:
     JOIN repos r ON a.repo_full_name = r.full_name
     WHERE LOWER(r.language) IN ({marks});
     """
+    metas, first_content = [], {}
     with sqlite3.connect(db_path) as conn:
-        df = pd.read_sql_query(query, conn, params=aliases)
-    return df
+        chunks = pd.read_sql_query(query, conn, params=aliases, chunksize=chunksize,
+                                   dtype={"dedup_primary": "Int64", "stars": "Int64"})
+        for k, chunk in enumerate(chunks):
+            chunk["name"] = chunk["name"].fillna("[Unnamed Skill]")
+            chunk["content"] = chunk["content"].fillna("").astype(str)
+            chunk.to_csv(csv_path, mode="w" if k == 0 else "a", header=k == 0, index=False)
+            for sha, text in zip(chunk["file_sha"], chunk["content"]):
+                if sha not in first_content:
+                    first_content[sha] = text
+            metas.append(chunk[["file_sha", "name"]])
+    return pd.concat(metas, ignore_index=True), first_content
 
 
 # ------------------------------------------------------- 2. clone detection
@@ -74,41 +91,79 @@ def type1_pairs(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def similar_pairs(df: pd.DataFrame, low: float, high: float,
-                  max_cells: int = 20_000_000) -> pd.DataFrame:
-    """TF-IDF cosine over distinct SHAs, computed chunk by chunk."""
-    distinct = (
-        df.groupby("file_sha", sort=True)
-        .agg(skill_name=("name", "first"), sample_content=("content", "first"))
-        .reset_index()
-    )
+def tfidf_matrix(df: pd.DataFrame, first_content: dict):
+    """TF-IDF over distinct SHAs (first occurrence's name and content).
+
+    Empties first_content once the matrix is built, to free the text.
+    """
+    distinct = df.groupby("file_sha", sort=True).agg(skill_name=("name", "first")).reset_index()
+    shas = distinct["file_sha"].to_numpy()
     X = TfidfVectorizer(stop_words="english", min_df=1).fit_transform(
-        distinct["sample_content"].tolist()
+        [first_content[s] for s in shas]
     )  # rows are L2-normalised, so X @ X.T is cosine similarity
+    first_content.clear()
+    return X, shas, distinct["skill_name"].to_numpy()
+
+
+def similar_pairs(X, shas, names, low: float, high: float,
+                  max_cells: int = 20_000_000) -> pd.DataFrame:
+    """TF-IDF cosine over distinct SHAs, computed chunk by chunk.
+
+    Matches are kept as NumPy index/score arrays rather than one dict per pair,
+    so tens of millions of pairs fit in memory. Pair order and scores are the
+    same as building the rows one at a time.
+    """
     n = X.shape[0]
     XT = X.T.tocsc()
     chunk = max(1, max_cells // max(n, 1))
-    shas = distinct["file_sha"].to_numpy()
-    names = distinct["skill_name"].to_numpy()
 
-    out = []
+    found_i, found_j, found_s, total = [], [], [], 0
     for start in range(0, n, chunk):
         stop = min(start + chunk, n)
         sims = (X[start:stop] @ XT).toarray()
         ii, jj = np.where(sims >= low)
         gi = ii + start
         keep = jj > gi  # upper triangle, no self-pairs
-        for i, j, s in zip(gi[keep], jj[keep], sims[ii[keep], jj[keep]]):
-            out.append({
-                "skill_a_sha": shas[i], "skill_a_name": names[i],
-                "skill_b_sha": shas[j], "skill_b_name": names[j],
-                "similarity_score": float(s),
-                "clone_type": TYPE2 if s >= high else TYPE3,
-            })
+        found_i.append(gi[keep].astype(np.int32))
+        found_j.append(jj[keep].astype(np.int32))
+        found_s.append(sims[ii[keep], jj[keep]])
+        total += int(keep.sum())
         if stop == n or (start // chunk) % max(1, (n // chunk) // 20) == 0:
-            print(f"  compared {stop:,}/{n:,} distinct files, {len(out):,} pairs so far")
-    return pd.DataFrame(out, columns=["skill_a_sha", "skill_a_name", "skill_b_sha",
-                                      "skill_b_name", "similarity_score", "clone_type"])
+            print(f"  compared {stop:,}/{n:,} distinct files, {total:,} pairs so far")
+
+    i = np.concatenate(found_i) if found_i else np.empty(0, np.int32)
+    j = np.concatenate(found_j) if found_j else np.empty(0, np.int32)
+    s = np.concatenate(found_s) if found_s else np.empty(0)
+    return pd.DataFrame({
+        "skill_a_sha": shas[i], "skill_a_name": names[i],
+        "skill_b_sha": shas[j], "skill_b_name": names[j],
+        "similarity_score": s,
+        "clone_type": pd.Categorical.from_codes((s < high).astype(np.int8), [TYPE2, TYPE3]),
+    })
+
+
+def estimate_pairs(X, low: float, sample: int, max_cells: int = 20_000_000):
+    """Dry run: compare a random sample of distinct files against all of them and
+    extrapolate the total pair count, pair memory and comparison time."""
+    import time
+
+    n = X.shape[0]
+    rows = np.sort(np.random.default_rng(42).choice(n, size=min(sample, n), replace=False))
+    XT = X.T.tocsc()
+    chunk = max(1, max_cells // max(n, 1))
+    matches, t0 = 0, time.time()
+    for start in range(0, len(rows), chunk):
+        part = rows[start:start + chunk]
+        sims = (X[part] @ XT).toarray()
+        sims[np.arange(len(part)), part] = 0  # ignore self-similarity
+        matches += int((sims >= low).sum())
+    elapsed = time.time() - t0
+    pairs = matches * n / len(rows) / 2  # each pair is seen from both sides
+    print(f"  sampled {len(rows):,} of {n:,} distinct files in {elapsed:.1f}s")
+    print(f"  estimated pairs >= {low}: {pairs:,.0f}")
+    print(f"  estimated memory for pairs: {pairs * 70 / 1e9:.1f} GB")
+    print(f"  estimated comparison time: {elapsed * n / len(rows) / 3600:.1f} h "
+          f"(at --max-cells {max_cells:,})")
 
 
 # ------------------------------------------------------- 3. categorise + plot
@@ -154,6 +209,11 @@ def main():
     ap.add_argument("--out", default=None, help="output folder (default results/<lang>)")
     ap.add_argument("--type3", type=float, default=0.65)
     ap.add_argument("--type2", type=float, default=0.85)
+    ap.add_argument("--max-cells", type=int, default=20_000_000,
+                    help="similarity cells per chunk; larger = faster, more RAM (~8 bytes each)")
+    ap.add_argument("--dry-run", action="store_true",
+                    help="estimate pair count, memory and time from a sample, then stop")
+    ap.add_argument("--sample", type=int, default=2000, help="distinct files sampled by --dry-run")
     args = ap.parse_args()
 
     lang = args.lang.lower()
@@ -162,10 +222,7 @@ def main():
     os.makedirs(out, exist_ok=True)
 
     print(f"[1/4] Extracting {lang} skills from {args.db} ...")
-    df = extract(args.db, lang)
-    df["name"] = df["name"].fillna("[Unnamed Skill]")
-    df["content"] = df["content"].fillna("").astype(str)
-    df.to_csv(os.path.join(out, f"extracted_skills_{tag}.csv"), index=False)
+    df, first_content = extract(args.db, lang, os.path.join(out, f"extracted_skills_{tag}.csv"))
     print(f"      {len(df):,} skill occurrences, {df['file_sha'].nunique():,} distinct files")
 
     print("[2/4] Type-1 (identical SHA) ...")
@@ -174,7 +231,13 @@ def main():
     print(f"      {len(t1):,} Type-1 pairs saved")
 
     print("[3/4] Type-2 / Type-3 (TF-IDF cosine) ...")
-    pairs = similar_pairs(df, args.type3, args.type2)
+    X, shas, names = tfidf_matrix(df, first_content)
+    if args.dry_run:
+        estimate_pairs(X, args.type3, args.sample, args.max_cells)
+        print("Dry run: stopping before the full comparison.")
+        return
+    pairs = similar_pairs(X, shas, names, args.type3, args.type2, args.max_cells)
+    del X
     pairs.to_csv(os.path.join(out, f"{tag}_similar_pairs.csv"), index=False)
     pairs.sort_values(["similarity_score", "skill_a_name"], ascending=[False, True]) \
          .head(10).to_csv(os.path.join(out, "top10_similar_pairs.csv"), index=False)

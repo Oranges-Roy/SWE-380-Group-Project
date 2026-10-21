@@ -1,0 +1,39 @@
+[1/4] Extracting python skills from agent_skills_release.db ...
+      1,657,440 skill occurrences, 769,920 distinct files
+[2/4] Type-1 (identical SHA) ...
+      887,520 Type-1 pairs saved
+[3/4] Type-2 / Type-3 (TF-IDF cosine) ...
+  compared 389/769,920 distinct files, 5,316 pairs so far
+  compared 38,511/769,920 distinct files, 773,570 pairs so far
+  compared 76,633/769,920 distinct files, 1,494,929 pairs so far
+  compared 114,755/769,920 distinct files, 2,186,308 pairs so far
+  compared 152,877/769,920 distinct files, 2,842,881 pairs so far
+  compared 190,999/769,920 distinct files, 3,475,640 pairs so far
+  compared 229,121/769,920 distinct files, 4,069,015 pairs so far
+  compared 267,243/769,920 distinct files, 4,591,385 pairs so far
+  compared 305,365/769,920 distinct files, 5,106,572 pairs so far
+  compared 343,487/769,920 distinct files, 5,569,189 pairs so far
+  compared 381,609/769,920 distinct files, 5,989,450 pairs so far
+  compared 419,731/769,920 distinct files, 6,376,134 pairs so far
+  compared 457,853/769,920 distinct files, 6,720,520 pairs so far
+  compared 495,975/769,920 distinct files, 7,031,336 pairs so far
+  compared 534,097/769,920 distinct files, 7,295,041 pairs so far
+  compared 572,219/769,920 distinct files, 7,517,494 pairs so far
+  compared 610,341/769,920 distinct files, 7,702,246 pairs so far
+  compared 648,463/769,920 distinct files, 7,856,894 pairs so far
+  compared 686,585/769,920 distinct files, 7,967,372 pairs so far
+  compared 724,707/769,920 distinct files, 8,036,083 pairs so far
+  compared 762,829/769,920 distinct files, 8,064,249 pairs so far
+  compared 769,920/769,920 distinct files, 8,065,074 pairs so far
+[4/4] Categorising and plotting ...
+
+                          count  share_%
+overall_category                        
+Type-1 (Verbatim)       1028116     62.0
+Truly Unique             310190     18.7
+Type-2 (Parameterized)   225534     13.6
+Type-3 (Semantic)         93600      5.6
+Total                   1657440    100.0
+
+Type-1 pairs: 887,520 | Type-2/3 pairs: 8,065,074
+All outputs in: C:\Users\roshkris\SWE-380-Group-Project\results\python

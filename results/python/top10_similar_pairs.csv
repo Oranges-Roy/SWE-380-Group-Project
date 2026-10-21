@@ -1,0 +1,11 @@
+skill_a_sha,skill_a_name,skill_b_sha,skill_b_name,similarity_score,clone_type
+24ab8dbffaa4536d237c09c916c22a7a8a7a5c95,ai-music-prompts,41cd590e57a189aa707913792ab9a24bb3ca2bd4,ai-music-prompts,1.0000000000000835,Type-2 (Parameterized)
+064145de9b7dfff442920abf1f077d9650f0ebbe,skin-health-analyzer,ed7c00097b117892297d8ec8f0899881817f1c47,skin-health-analyzer,1.0000000000000202,Type-2 (Parameterized)
+2658e422bed7a3f7945869ece80d772ef4124f33,mental-health-analyzer,ae7cb987e3587fd37481004d88726645f9afdbd5,mental-health-analyzer,1.00000000000002,Type-2 (Parameterized)
+64fe5e6af058e7e7a65e19c7de274b459d3f6825,perspective-elon-musk,74e2283013854d92dc2ee141399ffd1e7c3a692d,elon-musk-perspective,1.000000000000018,Type-2 (Parameterized)
+6286ea6d33db7322d09e6592fd91dcf5a8da659e,auto-qa,663fb08a56f8ae3982411895b77ab8ad3e8abd09,auto-qa,1.0000000000000144,Type-2 (Parameterized)
+6286ea6d33db7322d09e6592fd91dcf5a8da659e,auto-qa,911e0b084caf6de42e674bbf60a460e81bf1092d,auto-qa,1.0000000000000144,Type-2 (Parameterized)
+663fb08a56f8ae3982411895b77ab8ad3e8abd09,auto-qa,911e0b084caf6de42e674bbf60a460e81bf1092d,auto-qa,1.0000000000000144,Type-2 (Parameterized)
+1627b9754e79da24c3b73cb85518ac681487baf2,fitness-analyzer,53a4756c115bc66f5b953e884be2000120232907,fitness-analyzer,1.000000000000014,Type-2 (Parameterized)
+10491f5c70d2faa0cc3bc82c9272a6d9e36397a4,bazi-report,21758f050b7fa6908f13521ce0f1fab91ff744d1,bazi-report,1.0000000000000138,Type-2 (Parameterized)
+a0ba52e6013c5f474821eb952c9543e98e2b7856,skin-health-analyzer,bad1c09de230c31b736b675cb5a60ec6ad43fce2,skin-health-analyzer,1.000000000000013,Type-2 (Parameterized)
