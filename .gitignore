@@ -1,0 +1,7 @@
+# Large local data - never commit (GitHub rejects files over 100 MB)
+*.db
+*.db-shm
+*.db-wal
+results/*/extracted_skills_*.csv
+results/python/python_similar_pairs.csv
+results/python/python_type1_pairs.csv
