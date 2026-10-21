@@ -1,0 +1,11 @@
+skill_a_sha,skill_a_name,skill_b_sha,skill_b_name,similarity_score,clone_type
+0ba30d4a93705e6966026b265b03e465effecb86,rust-patterns,6ca79c1284837c3f1ae2d8eaf0af7d68121de803,rust-patterns,1.0000000000000018,Type-2 (Parameterized)
+1568d9d184854fafd5815067c781af9a1a096bc6,scheduler,63c1d5151ca37297c6d4ef63b2fabc78233a3a10,scheduler,1.0000000000000016,Type-2 (Parameterized)
+56a10bae4037f0b5d47fd28d8538b8b5f5fccaba,[Unnamed Skill],a5d9a02e734132af2659ccdd9d09df0009479b0b,rust-style,1.0000000000000013,Type-2 (Parameterized)
+56a10bae4037f0b5d47fd28d8538b8b5f5fccaba,[Unnamed Skill],f0261a101be28365fa5a6104d3f542982a12765b,rust-style,1.0000000000000013,Type-2 (Parameterized)
+207fb81435ce19b80dc370e8696ee715b11b9494,m13-domain-error,b4ba4c43cfe44f7e589300f5dbc9199c4a31b6d7,m13-domain-error,1.0000000000000013,Type-2 (Parameterized)
+a5d9a02e734132af2659ccdd9d09df0009479b0b,rust-style,f0261a101be28365fa5a6104d3f542982a12765b,rust-style,1.0000000000000013,Type-2 (Parameterized)
+6ae0ddd87270bf63903e7a4e764ba6114fec6a3e,spec-from-core,b366895ffc7ad002a49fa59d26847cc896e15ef2,[Unnamed Skill],1.000000000000001,Type-2 (Parameterized)
+8369c97484e547c6c17a5192c91269d686fb7a2f,verify-standards,d889bbd280618b76336ed0981d8a3a6fca69e676,verify-standards,1.000000000000001,Type-2 (Parameterized)
+269b95bba2b8e5e35c6273837569ebd3954c56b6,analyzing-dotnet-performance,7e675abe8a25f88e16668493a079dbc4f83d355a,analyzing-dotnet-performance,1.0000000000000009,Type-2 (Parameterized)
+306f0e5e08fcb21b4931a88f9cd83f124a09e3ce,golang-testing,f7d546e447b1cf74ff1f0b96e5096136d0c02773,golang-testing,1.0000000000000009,Type-2 (Parameterized)
