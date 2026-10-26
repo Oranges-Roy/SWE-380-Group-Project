@@ -1,0 +1,6 @@
+overall_category,total,has_content,no_content,symlink_stub,content_only_share_%
+Type-1 (Verbatim),17092,3063,14029,31,8.6
+Type-2 (Parameterized),4428,4428,0,7,12.4
+Type-3 (Semantic),5937,5937,0,21,16.7
+Truly Unique,28934,22170,6764,28,62.3
+Total,56391,35598,20793,87,100.0

@@ -42,6 +42,14 @@ TYPE1, TYPE2, TYPE3, UNIQUE = (
 
 
 # ---------------------------------------------------------------- 1. extract
+def looks_like_symlink(text: str) -> bool:
+    """A git symlink is stored as a blob holding only its target path, e.g.
+    '../../../.workspace-rules/skills/x/SKILL.md'; every link to the same target
+    therefore shares one SHA and counts as Type-1 without being a copied skill."""
+    return (0 < len(text) <= 255 and "\n" not in text and " " not in text
+            and "/" in text and text.lower().endswith(".md"))
+
+
 def extract(db_path: str, lang: str, csv_path: str, chunksize: int = 50_000):
     """Stream the query result to csv_path in chunks.
 
@@ -70,7 +78,10 @@ def extract(db_path: str, lang: str, csv_path: str, chunksize: int = 50_000):
             for sha, text in zip(chunk["file_sha"], chunk["content"]):
                 if sha not in first_content:
                     first_content[sha] = text
-            metas.append(chunk[["file_sha", "name"]])
+            stripped = chunk["content"].str.strip()
+            chunk["has_content"] = stripped != ""
+            chunk["symlink_stub"] = stripped.map(looks_like_symlink)
+            metas.append(chunk[["file_sha", "name", "has_content", "symlink_stub"]])
     return pd.concat(metas, ignore_index=True), first_content
 
 
@@ -181,6 +192,26 @@ def categorise(df: pd.DataFrame, pairs: pd.DataFrame) -> pd.Series:
     )
 
 
+def content_breakdown(df: pd.DataFrame) -> pd.DataFrame:
+    """Split each category into rows with fetched content, rows with none
+    (content_fetched = 0: SHA known, text never stored) and symlink stubs, plus the
+    category shares counting only rows that have content. A symlink is flagged per
+    SHA: most copies of a symlink have no stored content, but they share its SHA."""
+    order = [TYPE1, TYPE2, TYPE3, UNIQUE]
+    symlink = df["file_sha"].isin(set(df.loc[df["symlink_stub"], "file_sha"]))
+    g = df.assign(symlink=symlink).groupby("overall_category")
+    out = pd.DataFrame({
+        "total": g.size(),
+        "has_content": g["has_content"].sum(),
+        "no_content": g.size() - g["has_content"].sum(),
+        "symlink_stub": g["symlink"].sum(),
+    }).reindex(order).fillna(0).astype(int)
+    out.loc["Total"] = out.sum()
+    out["content_only_share_%"] = (out["has_content"] / max(out.at["Total", "has_content"], 1) * 100).round(1)
+    out.index.name = "overall_category"
+    return out
+
+
 def plot(categories: pd.Series, lang_label: str, path: str):
     counts = categories.value_counts()
     total = int(counts.sum())
@@ -259,8 +290,14 @@ def main():
     label = {"python": "Python", "c++": "C++"}.get(lang, args.lang)
     plot(df["overall_category"], label, os.path.join(out, f"{tag}_clones.png"))
 
+    breakdown = content_breakdown(df)
+    breakdown.to_csv(os.path.join(out, "content_breakdown.csv"))
+
     print("\n" + summary.to_string())
     print(f"\nType-1 pairs: {len(t1):,} | Type-2/3 pairs: {len(pairs):,}")
+    nc, sl = breakdown.at["Total", "no_content"], breakdown.at["Total", "symlink_stub"]
+    print(f"No content (never fetched): {nc:,} of {len(df):,} ({nc / len(df) * 100:.1f}%) | "
+          f"symlink stubs: {sl:,} -- see content_breakdown.csv")
     print(f"All outputs in: {os.path.abspath(out)}")
 
 
