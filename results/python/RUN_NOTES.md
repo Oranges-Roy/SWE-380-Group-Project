@@ -25,9 +25,9 @@ The `--dry-run` estimate was 8.56 M pairs (6% high).
 | Category | Count | Share | Java | C++ |
 |---|---|---|---|---|
 | Type-1 (Verbatim) | 1,028,116 | 62.0% | 39.5% | 29.3% |
-| Truly Unique | 310,190 | 18.7% | 50.0% | 55.6% |
-| Type-2 (Parameterized) | 225,534 | 13.6% | 4.9% | 6.6% |
-| Type-3 (Semantic) | 93,600 | 5.6% | 5.6% | 8.5% |
+| Truly Unique | 310,190 | 18.7% | 50.0% | 58.1% |
+| Type-2 (Parameterized) | 225,534 | 13.6% | 4.9% | 6.0% |
+| Type-3 (Semantic) | 93,600 | 5.6% | 5.6% | 6.6% |
 | Total | 1,657,440 | 100% | | |
 
 All top-10 pairs score 1.0 (33,470 pairs score >= 0.9999): files that differ

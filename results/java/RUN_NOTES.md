@@ -16,10 +16,10 @@ Runtime: 2 min 55 s (mostly the full DB scan). Peak private memory: ~1.8 GB.
 
 | Category | Count | Share | C++ share |
 |---|---|---|---|
-| Truly Unique | 10,058 | 50.0% | 55.6% |
+| Truly Unique | 10,058 | 50.0% | 58.1% |
 | Type-1 (Verbatim) | 7,955 | 39.5% | 29.3% |
-| Type-3 (Semantic) | 1,117 | 5.6% | 8.5% |
-| Type-2 (Parameterized) | 988 | 4.9% | 6.6% |
+| Type-3 (Semantic) | 1,117 | 5.6% | 6.6% |
+| Type-2 (Parameterized) | 988 | 4.9% | 6.0% |
 | Total | 20,118 | 100% | |
 
 All top-10 pairs score 1.0 with different SHAs: the files differ only in

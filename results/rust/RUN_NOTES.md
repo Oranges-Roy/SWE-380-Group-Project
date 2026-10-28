@@ -17,9 +17,9 @@ Runtime: 5 min 53 s (mostly the full DB scan). Peak private memory: ~1.9 GB.
 | Category | Count | Share | C++ | Java | Python |
 |---|---|---|---|---|---|
 | Type-1 (Verbatim) | 17,092 | 30.3% | 29.3% | 39.5% | 62.0% |
-| Type-2 (Parameterized) | 4,428 | 7.9% | 6.6% | 4.9% | 13.6% |
-| Type-3 (Semantic) | 5,937 | 10.5% | 8.5% | 5.6% | 5.6% |
-| Truly Unique | 28,934 | 51.3% | 55.6% | 50.0% | 18.7% |
+| Type-2 (Parameterized) | 4,428 | 7.9% | 6.0% | 4.9% | 13.6% |
+| Type-3 (Semantic) | 5,937 | 10.5% | 6.6% | 5.6% | 5.6% |
+| Truly Unique | 28,934 | 51.3% | 58.1% | 50.0% | 18.7% |
 | Total | 56,391 | 100% | | | |
 
 All top-10 pairs score 1.0: files that differ only in things TF-IDF ignores
