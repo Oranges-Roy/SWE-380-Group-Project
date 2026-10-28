@@ -7,9 +7,9 @@ Our initial evaluation identified **10,737 C++ skill file occurrences** within t
 | Clone Type | Count | Share (%) |
 | :--- | :--- | :--- |
 | **Type-1 (Verbatim)** | 3,147 | 29.3% |
-| **Type-2 (Parameterized)** | 709 | 6.6% |
-| **Type-3 (Semantic)** | 914 | 8.5% |
-| **Unique Skills** | 5,967 | 55.6% |
+| **Type-2 (Parameterized)** | 643 | 6.0% |
+| **Type-3 (Semantic)** | 710 | 6.6% |
+| **Unique Skills** | 6,237 | 58.1% |
 | **Total** | **10,737** | **100.0%** |
 
 Our initial evaluation identified **56,391 rust skill file occurrences** within the dataset.
